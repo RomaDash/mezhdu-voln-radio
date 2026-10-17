@@ -16,4 +16,8 @@ dialog{border:0;color:var(--ink);background:#1d2720;padding:0;max-height:100svh}
 body.keyboard-input button{transition:none}
 .toast-undo{background:transparent;color:inherit;text-decoration:underline;font-weight:700;margin-left:8px;min-height:28px}.storage-error{color:var(--danger)}
 .station-actions .plain-button{min-height:44px}.switch{width:44px;height:44px}.switch-track{margin:12px 0 0 5px}.switch-track:after{left:8px;top:15px}.station-form .checkbox-label{min-height:44px;margin:2px 0}.frequency-slider{height:32px}
+.power-controls{display:flex;align-items:center;gap:10px}.feedback-toggle{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:48px;height:48px;border-radius:6px;background:#242d24;color:var(--accent)}.feedback-toggle[aria-pressed=false]{color:#b7c3ad}.feedback-toggle svg{width:19px;height:19px}
+@media(hover:hover) and (pointer:fine){.feedback-toggle:hover{background:#1c261e}}
+@media(max-width:1100px){.power-controls{gap:7px}.feedback-toggle{width:44px}}
+@media(max-width:600px){.power-controls{width:100%;gap:10px}.power-controls .power-button{flex:1;min-width:0}.feedback-toggle{width:46px;height:46px}}
 @media(max-width:600px){.tune-stepper{display:grid;grid-template-columns:44px 44px;gap:2px 15px;justify-content:center}.tune-stepper>span{grid-row:1;grid-column:1/-1}.tune-stepper>button:first-child{grid-row:2;grid-column:1}.tune-stepper>button:last-child{grid-row:2;grid-column:2}.tune-stepper .step-button{width:44px;height:44px}.dial-hint{max-width:130px;font-size:9px}.player-button{min-height:44px}.first-run-note .icon-button{width:36px;min-height:36px}}

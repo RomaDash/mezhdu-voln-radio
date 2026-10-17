@@ -1,8 +1,14 @@
 import { RadioAudio } from './audio-engine.js';
+import { InteractionAudio } from './interaction-audio.js';
 import { DEFAULT_STATIONS, MIN_FREQUENCY, MAX_FREQUENCY, clampFrequency, getReception, validateStation, loadStations, saveStations } from './stations.js';
 
 const $ = id => document.getElementById(id);
 const audio = new RadioAudio();
+const feedback = new InteractionAudio();
+let feedbackEnabled = true;
+try { feedbackEnabled = localStorage.getItem('mezhdu-voln:button-sounds') !== 'off'; } catch { /* Audio preferences also work when browser storage is unavailable. */ }
+feedback.setEnabled(feedbackEnabled);
+feedback.setVolume(.35);
 let frequency = 96;
 let stations = DEFAULT_STATIONS.map(station => ({ ...station }));
 let powered = false;
@@ -19,6 +25,31 @@ let initialized = false;
 let waveformFrame = 0;
 let waveformData = null;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+function renderFeedbackToggle() {
+  $('feedback-toggle').setAttribute('aria-pressed', String(feedbackEnabled));
+  $('feedback-toggle').setAttribute('aria-label', feedbackEnabled ? 'Отключить звуки кнопок' : 'Включить звуки кнопок');
+  $('feedback-toggle').title = feedbackEnabled ? 'Звуки кнопок включены' : 'Звуки кнопок выключены';
+  $('feedback-icon').setAttribute('href', feedbackEnabled ? '#i-volume' : '#i-muted');
+}
+renderFeedbackToggle();
+$('feedback-toggle').addEventListener('click', () => {
+  feedbackEnabled = !feedbackEnabled;
+  feedback.setEnabled(feedbackEnabled);
+  renderFeedbackToggle();
+  try { localStorage.setItem('mezhdu-voln:button-sounds', feedbackEnabled ? 'on' : 'off'); } catch { /* Nonessential preferences must not block the receiver. */ }
+  if (feedbackEnabled) void feedback.play('click');
+});
+document.addEventListener('click', event => {
+  const button = event.target instanceof Element ? event.target.closest('button') : null;
+  if (!button || button.disabled || button.id === 'feedback-toggle') return;
+  const kind = button.id === 'power-button' ? powered || starting ? 'power-off' : 'power-on'
+    : ['frequency-up', 'frequency-down'].includes(button.id) ? 'tune' : 'click';
+  void feedback.play(kind);
+}, true);
+document.addEventListener('change', event => {
+  if (event.target instanceof Element && event.target.matches('input[type=checkbox], select')) void feedback.play('click');
+});
 
 for (let i = 0; i <= 80; i += 1) {
   const tick = document.createElement('i');
@@ -139,7 +170,7 @@ for (const id of ['volume', 'noise']) {
   $(id).addEventListener('input', event => {
     const value = Number(event.target.value);
     $(`${id}-value`).textContent = `${value}%`;
-    if (id === 'volume') audio.setVolume(value / 100 * .5);
+    if (id === 'volume') { audio.setVolume(value / 100 * .5); feedback.setVolume(value / 100); }
     else audio.setNoise(value / 100);
   });
 }
@@ -373,5 +404,6 @@ async function initialize() {
   renderCredits(); renderStations(); tune(frequency); initialized = true;
 }
 
-window.addEventListener('pagehide', () => { powerRevision += 1; audio.stop(); powered = false; starting = false; renderPower(); });
+window.addEventListener('pagehide', () => { powerRevision += 1; audio.stop(); feedback.setEnabled(false); powered = false; starting = false; renderPower(); });
+window.addEventListener('pageshow', () => { feedback.setEnabled(feedbackEnabled); });
 initialize().catch(() => { initialized = true; announce('Не удалось загрузить сохранённый эфир. Открой пульт и проверь передачи.', true); });

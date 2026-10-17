@@ -127,6 +127,57 @@ test('file playback pauses on stop and resumes from its position after tuning ba
   engine.destroy();
 });
 
+// Disabling the Web Audio loop or forgetting to wrap the saved position fails here.
+test('uploaded files loop by default and resume within the file after multiple laps', async () => {
+  const engine = setup();
+  await engine.start();
+  const context = FakeAudioContext.instances[0];
+  const station = { ...fileStation('looping tape'), loop: undefined };
+  const pending = engine.setStation(station, 1);
+  await flush();
+  context.decodes[0].resolve({ decoded: 'looping tape', duration: 10 });
+  await pending;
+  const first = playingFiles(context)[0];
+  assert.equal(first.loop, true);
+  assert.equal(first.offset, 0);
+
+  context.currentTime = 23.5;
+  await engine.setStation(null, 0);
+  assert.equal(playingFiles(context).length, 0);
+  assert.equal(first.connections.length, 0);
+  await engine.setStation(station, 1);
+  const resumed = playingFiles(context);
+  assert.equal(resumed.length, 1);
+  assert.notEqual(resumed[0], first);
+  assert.equal(resumed[0].loop, true);
+  assert.equal(resumed[0].offset, 3.5);
+  assert.equal(context.decodes.length, 1);
+  engine.destroy();
+});
+
+// Defaulting an explicit false to true, or applying loop offsets to one-shots, fails here.
+test('explicit loop false keeps uploaded messages one-shot when retuned', async () => {
+  const engine = setup();
+  await engine.start();
+  const context = FakeAudioContext.instances[0];
+  const station = { ...fileStation('one-shot message'), loop: false };
+  const pending = engine.setStation(station, 1);
+  await flush();
+  context.decodes[0].resolve({ decoded: 'one-shot message', duration: 10 });
+  await pending;
+  assert.equal(playingFiles(context)[0].loop, false);
+
+  context.currentTime = 23.5;
+  await engine.setStation(null, 0);
+  await engine.setStation(station, 1);
+  const resumed = playingFiles(context);
+  assert.equal(resumed.length, 1);
+  assert.equal(resumed[0].loop, false);
+  assert.equal(resumed[0].offset, 0);
+  assert.equal(context.decodes.length, 1);
+  engine.destroy();
+});
+
 // Empty or disabled stations must never consume a playable source.
 test('empty file and disabled stations remain static only', async () => {
   const engine = setup();

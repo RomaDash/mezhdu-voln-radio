@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111716">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="description" content="Игровой радиоприёмник для настольных приключений. Настрой частоту и услышь, что скрывается между волн.">
+  <title>Между волн — игровой радиоприёмник</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 12h3l2-7 4 14 3-11 2 4h6"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h7m4 0h5M4 17h3m4 0h9M11 4v6M7 14v6"/></symbol>
+    <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v9m-5-7a8 8 0 1 0 10 0"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4Zm4 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-noise" viewBox="0 0 24 24"><path d="M3 13h2l2-7 3 13 3-15 3 14 2-6h3"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 15v5h16v-5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M4 14v-3a8 8 0 0 1 16 0v3M4 12H2v8h5v-8H4Zm16 0h2v8h-5v-8h3Z"/></symbol>
+  </defs></svg>
+
+  <header class="masthead">
+    <a class="brand" href="./" aria-label="Между волн — на главную"><svg><use href="#i-wave"/></svg><span>между волн<span class="brand-dot">.</span></span></a>
+    <nav aria-label="Управление приёмником">
+      <button class="plain-button help-button" id="help-open"><span class="question-mark">?</span> Как играть</button>
+      <button class="host-button" id="host-open" aria-label="Пульт ведущего"><svg><use href="#i-sliders"/></svg><span>Пульт ведущего</span></button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title">У эфира есть<br>свои секреты.</h1>
+      <div class="intro-note"><p>Крути частоту. Вслушивайся в шум.<br>Кто-то на той стороне ждёт ответа.</p><span><span class="small-dot"></span> Приёмник для ваших историй</span></div>
+    </section>
+
+    <section class="radio" id="radio" data-ui aria-label="Радиоприёмник" data-powered="false">
+      <div class="radio-top"><div class="radio-model"><svg><use href="#i-wave"/></svg><span>Между волн</span></div><div class="radio-top-right"><span class="power-led" id="power-led"></span><span id="hardware-state">Питание выключено</span><span class="screw" aria-hidden="true"></span></div></div>
+
+      <div class="radio-face">
+        <div class="speaker-area" aria-hidden="true"><div class="speaker-grille"></div><div class="speaker-foot">Слушай внимательнее.</div></div>
+
+        <div class="receiver-center">
+          <div class="frequency-screen">
+            <div class="screen-top"><span>Частота приёма</span><span class="band-mark">FM</span></div>
+            <div class="frequency-reading"><output id="frequency-value" for="frequency">96.0</output><span>МГц</span></div>
+            <div class="screen-bottom"><span id="signal-status">Эфир ждёт</span><div class="signal-meter" role="meter" aria-label="Уровень сигнала" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="signal-meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          </div>
+
+          <div class="frequency-scale" id="frequency-scale" aria-hidden="true"><div class="scale-numbers"><span>88</span><span>92</span><span>96</span><span>100</span><span>104</span><span>108</span></div><div class="scale-ticks" id="scale-ticks"></div><span class="frequency-needle" id="frequency-needle"></span></div>
+          <label class="sr-only" for="frequency">Частота, МГц</label><input class="frequency-slider" type="range" id="frequency" min="87.5" max="108" step="0.1" value="96" aria-valuetext="96.0 мегагерц">
+          <div class="waveform-area"><canvas id="waveform" aria-hidden="true"></canvas><div class="waveform-label"><span class="small-dot"></span><span id="waveform-caption">Включи приёмник, чтобы услышать эфир</span></div></div>
+        </div>
+
+        <div class="tuning-area">
+          <div class="dial-surround"><span class="dial-tick tick-top"></span><span class="dial-tick tick-left"></span><span class="dial-tick tick-right"></span><div class="tuning-knob" id="tuning-knob" role="slider" tabindex="0" aria-label="Ручка настройки частоты" aria-valuemin="87.5" aria-valuemax="108" aria-valuenow="96" aria-valuetext="96.0 мегагерц"><div class="knob-face"><span class="knob-marker" id="knob-marker"></span><span class="knob-center"></span></div></div></div>
+          <div class="tune-stepper"><button id="frequency-down" class="step-button" aria-label="Уменьшить частоту на 0.1 мегагерца"><svg><use href="#i-arrow"/></svg></button><span>Настройка</span><button id="frequency-up" class="step-button" aria-label="Увеличить частоту на 0.1 мегагерца"><svg><use href="#i-arrow"/></svg></button></div>
+          <span class="dial-hint">Поворачивай или тяни вверх</span>
+        </div>
+      </div>
+
+      <div class="radio-controls">
+        <button class="power-button" id="power-button" aria-pressed="false"><svg><use href="#i-power"/></svg><span id="power-label">Включить приёмник</span></button>
+        <div class="listening-controls"><label class="range-control" for="volume"><svg><use href="#i-volume"/></svg><span>Громкость</span><input type="range" id="volume" min="0" max="100" value="35"><output id="volume-value" for="volume">35%</output></label><label class="range-control" for="noise"><svg><use href="#i-noise"/></svg><span>Помехи</span><input type="range" id="noise" min="0" max="100" value="45"><output id="noise-value" for="noise">45%</output></label></div>
+      </div>
+    </section>
+
+    <div class="below-radio"><p><svg><use href="#i-headphones"/></svg><span>Начни с тихой громкости.<span class="desktop-note"> Хорошая история начинается с шороха.</span></span></p><button class="plain-button player-button" id="player-mode"><svg><use href="#i-expand"/></svg> Режим игрока</button></div>
+    <div class="first-run-note" id="first-run-note"><span class="note-symbol" aria-hidden="true"><svg><use href="#i-wave"/></svg></span><p>Эфир уже живой.<span> Внутри — три тестовых сигнала. Свои записи можно добавить в пульте ведущего.</span></p><button class="icon-button" id="dismiss-note" aria-label="Скрыть подсказку"><svg><use href="#i-close"/></svg></button></div>
+  </main>
+
+  <footer class="page-footer"><span>Истории звучат между волн.</span><span>Создано для воображения</span></footer>
+  <button class="exit-player" id="exit-player" hidden><svg><use href="#i-expand"/></svg> Выйти из режима игрока</button>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><div class="noscript">Для работы приёмника включи JavaScript в настройках браузера.</div></noscript>
+
+  <dialog class="host-drawer" id="host-dialog" aria-labelledby="host-title">
+    <div class="drawer-heading"><div><h2 id="host-title">Твой эфир</h2><p>Подготовь то, что услышат игроки.</p></div><button class="icon-button" id="host-close" aria-label="Закрыть пульт ведущего"><svg><use href="#i-close"/></svg></button></div>
+    <div class="host-scroll"><div class="storage-note"><svg><use href="#i-check"/></svg><span id="storage-status">Сохраняется в этом браузере</span></div><p class="host-explanation">Включённые передачи слышны на своих частотах. Названия и список видны только здесь.</p><div class="station-list" id="station-list"></div><button class="add-station" id="station-add"><svg><use href="#i-plus"/></svg> Добавить передачу</button>
+
+      <form id="station-form" class="station-form" hidden novalidate>
+        <h3 id="form-title">Новая передача</h3>
+        <label for="station-name">Название <input id="station-name" name="name" maxlength="60" placeholder="Например, голос смотрителя" required></label><p class="field-error" id="name-error"></p>
+        <div class="form-row"><label for="station-frequency">Частота, МГц<input id="station-frequency" name="frequency" type="number" min="87.5" max="108" step="0.1" value="100" inputmode="decimal" required></label><label for="station-type">Источник<select id="station-type" name="type"><option value="file">Аудиозапись</option><option value="beacon">Тестовый маяк</option><option value="morse">Тестовый позывной</option><option value="tone">Тестовый сигнал</option></select></label></div><p class="field-error" id="frequency-error"></p>
+        <div id="file-field"><label class="file-upload" for="station-file"><svg><use href="#i-upload"/></svg><span id="file-caption">Выбрать аудиозапись</span><small>MP3, WAV, OGG, M4A · до 30 МБ</small><input type="file" id="station-file" name="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm"></label><p class="field-error" id="file-error"></p><p class="file-note">Можно сохранить без файла и добавить запись позже.</p></div>
+        <label class="checkbox-label"><input type="checkbox" id="station-loop" checked><span>Повторять по кругу</span></label><label class="checkbox-label"><input type="checkbox" id="station-enabled" checked><span>Передача включена</span></label>
+        <div class="form-actions"><button class="primary-button" type="submit">Сохранить передачу</button><button class="plain-button" type="button" id="form-cancel">Отмена</button></div>
+      </form>
+      <div class="host-bottom-note"><h3>Один прибор. Ваша история.</h3><p>Настройки и записи хранятся на этом устройстве в этом браузере. Для игры передай игрокам сам приёмник или включи режим игрока на общем экране.</p></div>
+    </div>
+    <div class="drawer-footer"><button class="primary-button" id="host-player"><svg><use href="#i-expand"/></svg> Перейти к игре</button></div>
+  </dialog>
+
+  <dialog class="help-dialog" id="help-dialog" aria-labelledby="help-title"><button class="icon-button help-close" id="help-close" aria-label="Закрыть инструкцию"><svg><use href="#i-close"/></svg></button><svg class="help-wave"><use href="#i-wave"/></svg><h2 id="help-title">Прислушайся к эфиру.</h2><p>Включи питание и медленно меняй частоту. Когда приблизишься к передаче, сквозь помехи проступит сигнал. Чем точнее настройка, тем чище звук.</p><div class="help-directions"><p><strong>Мышью или пальцем</strong><span>Крути ручку, тяни её вверх и вниз или двигай ползунок под шкалой.</span></p><p><strong>С клавиатуры</strong><span>Выбери ручку или ползунок клавишей Tab. Стрелки меняют частоту на 0.1 МГц, Home и End ведут к краям диапазона.</span></p><p><strong>Для ведущего</strong><span>Добавь передачи в пульте, а затем включи режим игрока: список и подсказки скроются. Тестовые сигналы можно выключить.</span></p></div><button class="primary-button" id="help-done">Понятно, ловим волну</button></dialog>
+</body>
+</html>

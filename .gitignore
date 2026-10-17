@@ -1,0 +1,7 @@
+.DS_Store
+node_modules/
+.taste-skill/
+qa/
+*.tar.gz
+.openai/
+output/playwright/

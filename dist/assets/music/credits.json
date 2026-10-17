@@ -1,0 +1,32 @@
+[
+  {
+    "file": "night-on-the-docks-sax.mp3",
+    "title": "Night on the Docks - Sax",
+    "artist": "Kevin MacLeod",
+    "genre": "Jazz",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?Search=Search&isrc=USUAN1100137",
+    "changes": "Transcoded from the author's MP3 to 160 kbps MP3; embedded artwork omitted. Full-length recording; no musical edits."
+  },
+  {
+    "file": "cyborg-ninja.mp3",
+    "title": "Cyborg Ninja",
+    "artist": "Kevin MacLeod",
+    "genre": "Electronica / Chiptune",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?Search=Search&isrc=USUAN1600008",
+    "changes": "Transcoded from the author's MP3 to 160 kbps MP3. Full-length recording; no musical edits."
+  },
+  {
+    "file": "gymnopedie-no-1.mp3",
+    "title": "Gymnopedie No. 1",
+    "artist": "Kevin MacLeod; composition by Erik Satie",
+    "genre": "Classical / Piano",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?Search=Search&isrc=USUAN1100787",
+    "changes": "Transcoded from the author's MP3 to 160 kbps MP3. Full-length recording; no musical edits."
+  }
+]
